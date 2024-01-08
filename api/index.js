@@ -79,7 +79,11 @@ app.post('/register', async (req, res) => {
         
         }, jwtSecret, {},(err,token)=>{
         if(err) throw err;
-        res.cookie('token',token).json(userDoc);
+        res.cookie('token',token, {
+          sameSite: 'none',
+          secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+        }
+        ).json(userDoc);
       });
     
     }
@@ -114,7 +118,11 @@ app.get('/profile', (req,res)=>{
 app.post('/logout', (req,res)=>{
   mongoose.connect(process.env.MONGO_URL);
 
-  res.cookie('token','').json(true);
+  res.cookie('token','', {
+    sameSite: 'none',
+    secure: true, // The "secure" attribute is also required for cookies with SameSite="None"
+  }
+  ).json(true);
 });
 
 app.post('/upload-by-link', async (req,res)=>{
